@@ -53,7 +53,7 @@ app.get("/scrape", function (req, res) {
   var $ = cheerio.load(body)
 
   var companyName = $(".cargurus");
-  var companyNameText = companyName.text();
+  var companyNameText = cargurus.text();
 
   // Now, we grab every h2 within an article tag, and do the following:
   $("article h2").each(function (i, element) {
