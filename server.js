@@ -13,6 +13,7 @@ mongoose.connect(MONGODB_URI, mongoose_options, function (err) {
     console.log("Succeeded connected to: " + MONGODB_URI);
   }
 });
+
 // Our scraping tools
 // Axios is a promised-based http library, similar to jQuery's Ajax method
 // It works on the client and on the server
@@ -38,36 +39,47 @@ app.use(express.json());
 // Make public a static folder
 app.use(express.static("public"));
 
-// Connect to the Mongo DB
-mongoose.connect("mongoose.connect(MONGODB_URI)", { useNewUrlParser: true });
 
 // Routes
-
-// A GET route for scraping the echoJS website
+var url =  "https://www.espn.com/nba/"
+// A GET route for scraping the espn website
 app.get("/scrape", function (req, res) {
-  axios.get("https://www.cargurus.com/Cars/spt_used_cars?px8324=p2&sourceContext=cargurus&cgcid=2161&cgagid=910472&ax8324=71264165&type=GoogleAdWordsSearch&kw=car%20gurus&matchtype=e&ad=332926659521&placement=&networktype=g&device=c&devicemodel=&adposition=1t3&physloc=9003469&intloc=&aceid=&cid=141954540&agid=7773125700&tgtid=aud-462482486381:kwd-4934157750&fid=&gclid=CjwKCAjwxrzoBRBBEiwAbtX1n1z-irO0USICHOeGSe4izgTrZMCsoPqb3nGgZDkrYmoKbysMLOv9PhoCbzsQAvD_BwE").then(function(response) {
+
+  axios.get(url).then(function(response) {
 
   // First, we grab the body of the html with axios
-  request (axios, function (err, resp, body))
+  // request (axios, function (err, resp, body))
   // Then, we load that into cheerio and save it to $ for a shorthand selector
-  var $ = cheerio.load(body)
+  var $ = cheerio.load(response.data)
 
-  var companyName = $(".cargurus");
-  var companyNameText = cargurus.text();
+
 
   // Now, we grab every h2 within an article tag, and do the following:
-  $("article h2").each(function (i, element) {
+  $(".contentItem__content").each(function (i, element) {
     // Save an empty result object
     var result = {};
 
-    // Add the text and href of every link, and save them as properties of the result object
-    result.title = $(this)
-      .children("a")
-      .text();
     result.link = $(this)
       .children("a")
       .attr("href");
 
+    result.link = "www.espn.com" + result.link;
+
+    result.title = $(this)
+      .children("a")
+      .children(".contentItem__contentWrapper")
+      .children(".contentItem__titleWrapper")
+      .children("h1")
+      .text()
+
+    result.image = $(this)
+      .children("a")
+      .children("figure")
+      .children("picture")
+      .children("img")
+      .attr("src")
+
+    result.image = "https://a.espncdn.com/combiner/i?img=/photo/2018/0307/r337930_1296x729_16-9.jpg"
     // Create a new Article using the `result` object built from scraping
     db.Article.create(result)
       .then(function (dbArticle) {
