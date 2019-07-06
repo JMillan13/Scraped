@@ -1,7 +1,9 @@
 var express = require("express");
+var exphbs  = require('express-handlebars');
 var logger = require("morgan");
 var mongoose = require("mongoose");
 var path = require("path");
+
 
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
