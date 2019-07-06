@@ -1,10 +1,12 @@
 var express = require("express");
 var logger = require("morgan");
 var mongoose = require("mongoose");
+var path = require("path");
 
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 const mongoose_options = { useNewUrlParser: true };
+const HTML_PATH = __dirname + "/public/";
 
 mongoose.connect(MONGODB_URI, mongoose_options, function (err) {
   if (err) {
@@ -41,64 +43,71 @@ app.use(express.static("public"));
 
 
 // Routes
-var url =  "https://www.espn.com/nba/"
+var url = "https://www.espn.com/nba/"
 // A GET route for scraping the espn website
 app.get("/scrape", function (req, res) {
+console.log("asdfasdfasdf");
+  axios.get(url).then(function (response) {
 
-  axios.get(url).then(function(response) {
-
-  // First, we grab the body of the html with axios
-  // request (axios, function (err, resp, body))
-  // Then, we load that into cheerio and save it to $ for a shorthand selector
-  var $ = cheerio.load(response.data)
+    // First, we grab the body of the html with axios
+    // request (axios, function (err, resp, body))
+    // Then, we load that into cheerio and save it to $ for a shorthand selector
+    var $ = cheerio.load(response.data)
 
 
 
-  // Now, we grab every h2 within an article tag, and do the following:
-  $(".contentItem__content").each(function (i, element) {
-    // Save an empty result object
-    var result = {};
+    // Now, we grab every h2 within an article tag, and do the following:
+    $(".contentItem__content").each(function (i, element) {
+      // Save an empty result object
+      var result = {};
 
-    result.link = $(this)
-      .children("a")
-      .attr("href");
+      result.link = $(this)
+        .children("a")
+        .attr("href");
 
-    result.link = "www.espn.com" + result.link;
+      result.link = "www.espn.com" + result.link;
 
-    result.title = $(this)
-      .children("a")
-      .children(".contentItem__contentWrapper")
-      .children(".contentItem__titleWrapper")
-      .children("h1")
-      .text()
+      result.title = $(this)
+        .children("a")
+        .children(".contentItem__contentWrapper")
+        .children(".contentItem__titleWrapper")
+        .children("h1")
+        .text()
 
-    result.image = $(this)
-      .children("a")
-      .children("figure")
-      .children("picture")
-      .children("img")
-      .attr("src")
+      result.image = $(this)
+        .children("a")
+        .children("figure")
+        .children("picture")
+        .children("img")
+        .attr("src")
 
-    result.image = "https://a.espncdn.com/combiner/i?img=/photo/2018/0307/r337930_1296x729_16-9.jpg"
-    // Create a new Article using the `result` object built from scraping
-    db.Article.create(result)
-      .then(function (dbArticle) {
-        // View the added result in the console
-        console.log(dbArticle);
-      })
-      .catch(function (err) {
-        // If an error occurred, log it
-        console.log(err);
-      });
+
+
+
+      console.log("in server.js result image")
+      console.log(result.image);
+      result.image = "https://a.espncdn.com/combiner/i?img=/photo/2018/0307/r337930_1296x729_16-9.jpg"
+      // Create a new Article using the `result` object built from scraping
+      db.Article.create(result)
+        .then(function (dbArticle) {
+          // View the added result in the console
+          console.log(dbArticle);
+        })
+        .catch(function (err) {
+          // If an error occurred, log it
+          console.log(err);
+        });
+    });
+
+    // Send a message to the client
+    // res.send("Scrape Complete");
+    res.sendFile(path.join(HTML_PATH + '/results.html'));
   });
-
-  // Send a message to the client
-  res.send("Scrape Complete");
-});
 });
 
 // Route for getting all Articles from the db
 app.get("/articles", function (req, res) {
+
   // Grab every document in the Articles collection
   db.Article.find({})
     .then(function (dbArticle) {
