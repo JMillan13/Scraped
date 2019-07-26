@@ -42,7 +42,7 @@ mongoose.connect(MONGODB_URI, mongoose_options, function (err) {
 });
 
 // Require all models
-var db = require("./models/index");
+var db = require("./models");
 // Routes
 var url = "https://www.espn.com/nba/"
 // A GET route for scraping the espn website
