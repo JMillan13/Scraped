@@ -6,8 +6,8 @@ $.getJSON("/articles", function(data) {
     // Display the apropos information on the page
     var html = `
     <p data-id=${data[i]._id}>${data[i].title}</p>
-    <img src=${data[i].image}/>
     `
+    //     <img src=${data[i].image}/>
     $("#articles").append(html)
     // $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
   }

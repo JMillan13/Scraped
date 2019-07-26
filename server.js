@@ -9,8 +9,7 @@ var path = require("path");
 var axios = require("axios");
 var cheerio = require("cheerio");
 
-// Require all models
-var db = require("./models");
+
 var PORT = process.env.PORT || 3000;
 
 
@@ -42,6 +41,8 @@ mongoose.connect(MONGODB_URI, mongoose_options, function (err) {
   }
 });
 
+// Require all models
+var db = require("./models");
 // Routes
 var url = "https://www.espn.com/nba/"
 // A GET route for scraping the espn website
