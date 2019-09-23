@@ -20,9 +20,6 @@ Users should also be able to leave comments on the articles displayed and revisi
 
 Using Mongo / Mongoose:
 
-Overview
-
-In the late 90s and early 2000s, developers began to explore database options that allowed their web applications to handle unstructured data to meet the growing and ever-changing demands of users and address the limitations of the relational model. While these alternative databases existed for decades prior, they didn’t receive the label NoSQL until this time period.
 
 The structure of a NoSQL database is something other than a table. There are several different types of NoSQL databases, such as key-value and graph. In this unit I learned MongoDB, a document-oriented NoSQL database. MongoDB documents correspond to a row, or record, in SQL, but unlike rows, documents are analogous to JSON objects. I can see why MongoDB is a popular choice for Node.js developers!
 
